@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>For Anders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ffd6e0 0%, #c8f7c5 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Floating hearts background */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart-bg {
+            position: absolute;
+            top: -50px;
+            opacity: 0.4;
+            animation: floatDown linear infinite;
+        }
+
+        @keyframes floatDown {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .card-container {
+            width: 100%;
+            max-width: 500px;
+            z-index: 1;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 
+                0 20px 60px rgba(255, 105, 180, 0.4),
+                0 20px 60px rgba(144, 238, 144, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #ff69b4, #90ee90);
+            z-index: 1;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .hearts {
+            font-size: 64px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            color: #ff4081;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff4081, #ff69b4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .message {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #5a5a5a;
+            margin: 25px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(255, 235, 235, 0.95) 0%, rgba(235, 255, 235, 0.95) 100%);
+            border-radius: 20px;
+            border: 2px dashed rgba(255, 105, 180, 0.6);
+        }
+
+        .photo-container {
+            margin: 25px auto;
+            width: 250px;
+            height: 250px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 5px solid rgba(255, 105, 180, 0.8);
+            box-shadow: 
+                0 10px 25px rgba(255, 105, 180, 0.5),
+                inset 0 0 25px rgba(144, 238, 144, 0.4);
+            position: relative;
+        }
+
+        .your-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s;
+        }
+
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to right, rgba(255, 105, 180, 0.95), rgba(144, 238, 144, 0.95));
+            color: white;
+            padding: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 16px 35px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            min-width: 150px;
+        }
+
+        .yes-btn {
+            background: linear-gradient(45deg, #ff4081, #ff69b4);
+            color: white;
+            box-shadow: 0 8px 20px rgba(255, 64, 129, 0.4);
+        }
+
+        .yes-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(255, 64, 129, 0.6);
+        }
+
+        .no-btn {
+            background: linear-gradient(45deg, #90ee90, #98fb98);
+            color: #1b5e20;
+            box-shadow: 0 8px 20px rgba(144, 238, 144, 0.4);
+        }
+
+        .no-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(144, 238, 144, 0.6);
+        }
+
+        .response {
+            margin-top: 25px;
+            font-size: 1.3em;
+            color: #ff4081;
+            min-height: 60px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            padding: 20px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, rgba(255, 235, 235, 0.95) 0%, rgba(235, 255, 235, 0.95) 100%);
+            border: 2px solid rgba(255, 105, 180, 0.6);
+        }
+
+        .response.show {
+            opacity: 1;
+        }
+
+        .signature {
+            margin-top: 25px;
+            font-style: italic;
+            color: #666666;
+            font-size: 1.1em;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            border-left: 4px solid #ff69b4;
+            border-right: 4px solid #90ee90;
+        }
+
+        .no-counter {
+            font-size: 0.9em;
+            color: #388e3c;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 25px 15px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            button {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .photo-container {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating hearts background -->
+    <div class="floating-hearts" id="heartsBg"></div>
+
+    <div class="card-container">
+        <div class="card">
+            <div class="hearts">💚</div>
+            <h1>Hi Anders,</h1>
+
+            <div class="message">
+                Dear Chinese boy,<br><br>
+                Would you make this Noona happy?<br><br>
+                Spend valentines with me hehe
+            </div>
+
+            
+<div class="photo-container">
+    <img src="https://thumbs2.imgbox.com/a5/40/QZZ2FNVu_t.png" class="your-photo" alt="Cute cartoon heart">
+    <div class="photo-caption">Choose wisely 😋</div>
+</div>
+
+
+            <div class="buttons">
+                <button class="yes-btn" onclick="handleYes()">
+                    YES! ofc <3
+                </button>
+                <button class="no-btn" onclick="handleNo()" id="noBtn">
+                    Um...
+                </button>
+            </div>
+
+            <div id="noCounter" class="no-counter"></div>
+
+            <div id="response" class="response"></div>
+
+            <div class="signature">
+                Splendidly,<br>
+                Jiye noona 💕
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let noCount = 0;
+        const noButton = document.getElementById('noBtn');
+        const noCounter = document.getElementById('noCounter');
+        const responseDiv = document.getElementById('response');
+        const heartsBg = document.getElementById('heartsBg');
+        const photo = document.querySelector('.your-photo');
+
+        const noMessages = [
+            "You sure?",
+            "Damn? 💔",
+            "Boy think again 😭",
+            "You hate me?",
+            "Go spend it alone bye👋"
+        ];
+
+        const yesMessages = [
+            "YAY thank you hehe 💕"
+        ];
+
+        // IMAGE LOADING - Simple and effective
+        photo.onload = function() {
+            console.log("✅ Image loaded successfully!");
+            this.style.opacity = '1';
+        };
+
+        photo.onerror = function() {
+            console.log("⚠️ Image failed to load, showing cute fallback");
+            this.style.display = 'none';
+            const container = this.parentElement;
+            const fallback = document.createElement('div');
+            fallback.innerHTML = '<div style="font-size: 60px; margin-bottom: 10px;">🧸💕</div><div style="font-size: 18px; font-weight: bold;">Cute Flork with a heart!</div>';
+            fallback.style.cssText = 'width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: linear-gradient(135deg, #ff69b4, #90ee90); color: white; text-align: center; padding: 20px; border-radius: 16px;';
+            container.appendChild(fallback);
+        };
+
+        // Create floating hearts background
+        function createFloatingHearts() {
+            const heartEmojis = ['💚', '💖', '💗', '💓', '💞', '💕', '💘', '💝'];
+
+            for (let i = 0; i < 25; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-bg';
+                heart.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                heart.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                heartsBg.appendChild(heart);
+            }
+        }
+
+        function handleYes() {
+            const randomMessage = yesMessages[Math.floor(Math.random() * yesMessages.length)];
+            showResponse(randomMessage, '#ff4081');
+
+            // Make Yes button extra happy
+            const yesBtn = document.querySelector('.yes-btn');
+            yesBtn.innerHTML = '💖 YAY 💖';
+            yesBtn.style.background = 'linear-gradient(45deg, #ff4081, #e91e63)';
+            yesBtn.disabled = true;
+
+            // Hide No button
+            noButton.style.display = 'none';
+
+            // Create confetti
+            createConfetti();
+        }
+
+        function handleNo() {
+            noCount++;
+
+            if (noCount <= 4) {
+                noButton.innerHTML = noMessages[noCount];
+                noCounter.innerHTML = 'Clicked "Um..." ' + noCount + ' time' + (noCount > 1 ? 's' : '') + '...';
+
+                // Button gets smaller each time
+                noButton.style.transform = 'scale(' + (1 - (noCount * 0.1)) + ')';
+
+                // Color changes
+                if (noCount >= 2) {
+                    noButton.style.background = 'linear-gradient(45deg, #ffcc80, #ff69b4)';
+                }
+
+                if (noCount >= 3) {
+                    noButton.style.background = 'linear-gradient(45deg, #ff9999, #ff4081)';
+                    noButton.style.color = 'white';
+                }
+
+            } else {
+                // Final message
+                showResponse("fine 😔<br>bye don't talk to me", '#388e3c');
+                noButton.innerHTML = "you hate me 💔";
+                noButton.disabled = true;
+                noButton.style.background = '#cccccc';
+                noCounter.innerHTML = "sassy princess...";
+
+                // Sad effect
+                document.querySelector('.hearts').innerHTML = 'Damn...';
+                document.querySelector('.hearts').style.animation = 'none';
+            }
+        }
+
+        function showResponse(message, color) {
+            responseDiv.innerHTML = message;
+            responseDiv.style.color = color;
+            responseDiv.classList.add('show');
+        }
+
+        function createConfetti() {
+            const colors = ['#ff4081', '#ff69b4', '#90ee90', '#98fb98'];
+            const confettiContainer = document.querySelector('.card');
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'absolute';
+                confetti.style.width = '12px';
+                confetti.style.height = '12px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = '50%';
+                confetti.style.top = '50%';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.opacity = '0.9';
+                confetti.style.zIndex = '1000';
+                confetti.style.pointerEvents = 'none';
+
+                confettiContainer.appendChild(confetti);
+
+                const angle = Math.random() * 360;
+                const speed = 1 + Math.random() * 2;
+
+                let x = 0;
+                let y = 0;
+
+                function animateConfetti() {
+                    x += Math.cos(angle * Math.PI/180) * speed;
+                    y += Math.sin(angle * Math.PI/180) * speed + 0.5;
+
+                    confetti.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+                    confetti.style.opacity = 1 - (Math.abs(y) / 150);
+
+                    if (Math.abs(y) < 150) {
+                        requestAnimationFrame(animateConfetti);
+                    } else {
+                        confetti.remove();
+                    }
+                }
+
+                setTimeout(function() {
+                    animateConfetti();
+                }, Math.random() * 300);
+            }
+        }
+
+        // Initialize everything when page loads
+        window.onload = function() {
+            console.log("✨ Valentine card loaded!");
+
+            // Create floating hearts
+            createFloatingHearts();
+
+            console.log("📸 Image URL: https://thumbs2.imgbox.com/a5/40/QZZ2FNVu_t.png");
+            console.log("🔍 Open browser console (F12) for status");
+        };
+    </script>
+</body>
+</html>
