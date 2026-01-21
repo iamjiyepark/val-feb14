@@ -305,7 +305,7 @@
             "Damn? 💔",
             "Boy think again 😭",
             "You hate me?",
-            "Go spend it alone bye👋"
+            "fine spend it alone👋"
         ];
 
         const yesMessages = [
@@ -328,7 +328,7 @@
             container.appendChild(fallback);
         };
 
-        // Create floating hearts background
+        // floating hearts background
         function createFloatingHearts() {
             const heartEmojis = ['💚', '💖', '💗', '💓', '💞', '💕', '💘', '💝'];
 
@@ -348,16 +348,16 @@
             const randomMessage = yesMessages[Math.floor(Math.random() * yesMessages.length)];
             showResponse(randomMessage, '#ff4081');
 
-            // Make Yes button extra happy
+            //  Yes button design
             const yesBtn = document.querySelector('.yes-btn');
             yesBtn.innerHTML = '💖 YAY 💖';
             yesBtn.style.background = 'linear-gradient(45deg, #ff4081, #e91e63)';
             yesBtn.disabled = true;
 
-            // Hide No button
+            // Hide No
             noButton.style.display = 'none';
 
-            // Create confetti
+            //  confetti
             createConfetti();
         }
 
@@ -368,7 +368,7 @@
                 noButton.innerHTML = noMessages[noCount];
                 noCounter.innerHTML = 'Clicked "Um..." ' + noCount + ' time' + (noCount > 1 ? 's' : '') + '...';
 
-                // Button gets smaller each time
+                // Button gets smaller
                 noButton.style.transform = 'scale(' + (1 - (noCount * 0.1)) + ')';
 
                 // Color changes
@@ -389,7 +389,7 @@
                 noButton.style.background = '#cccccc';
                 noCounter.innerHTML = "sassy princess...";
 
-                // Sad effect
+                // Reject
                 document.querySelector('.hearts').innerHTML = 'Damn...';
                 document.querySelector('.hearts').style.animation = 'none';
             }
@@ -446,7 +446,7 @@
             }
         }
 
-        // Initialize everything when page loads
+        // Initialize
         window.onload = function() {
             console.log("✨ Valentine card loaded!");
 
